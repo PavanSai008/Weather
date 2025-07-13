@@ -4,15 +4,15 @@ import numpy as np
 import pickle
 import os
 
-app = Flask(__name__)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
 
-# WeatherAPI config
 API_KEY = '37afff6c9bd34d41888100230251307'
 BASE_URL = 'https://api.weatherapi.com/v1'
 MAIN_CITY = 'Hyderabad'
 POPULAR_CITIES = ['Delhi', 'Mumbai', 'Hyderabad', 'Bangalore', 'Kolkata']
 
-# Rain prediction model config
 MODEL_PATH = 'model.pkl'
 SCALER_PATH = 'scaler.pkl'
 FEATURE_COLUMNS_PATH = 'feature_columns.pkl'
@@ -37,7 +37,6 @@ def fetch_weather_data(city):
         if response.status_code != 200 or "current" not in data:
             return {"error": data.get("error", {}).get("message", "City not found")}
         current = data["current"]
-        # Map WeatherAPI fields to your model's expected features
         weather_features = {
             "pressure": current.get("pressure_mb", 0),
             "temperature": current.get("temp_c", 0),
