@@ -3,13 +3,16 @@ body {
   font-family: 'Nunito', sans-serif;
   background: linear-gradient(to bottom, #3b82f6, #1e3a8a);
   color: white;
+  padding: 15px;
+  box-sizing: border-box;
 }
 
 .container {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   padding: 20px;
   box-sizing: border-box;
+  flex-direction: column;
 }
 
 .search {
@@ -31,7 +34,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin-left: 20px;
 }
 
 .weather-overview {
@@ -67,6 +69,7 @@ body {
 .map iframe {
   width: 100%;
   height: 100%;
+  min-height: 250px;
   border-radius: 12px;
 }
 
@@ -88,17 +91,17 @@ body {
 }
 
 .forecast {
- 
   background: rgba(255, 255, 255, 0.08);
   padding: 20px;
   border-radius: 20px;
   width: 30%;
 }
+
 .summary-graph {
   background: rgba(255, 255, 255, 0.08);
   padding: 20px;
   border-radius: 20px;
-  width: 930px;
+  width: 70%;
 }
 
 .days div {
@@ -118,4 +121,71 @@ body {
   background: rgba(255, 255, 255, 0.1);
   padding: 5px 10px;
   border-radius: 5px;
+}
+
+/* Mobile grid adjustments */
+@media (max-width: 900px) {
+  .mobile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 15px;
+    grid-template-areas:
+      "current map"
+      "popular forecast"
+      "graph graph";
+  }
+  
+  .current-weather { 
+    grid-area: current; 
+    padding: 15px !important;
+  }
+  .map { 
+    grid-area: map; 
+    height: 170px;
+  }
+  .popular-cities { 
+    grid-area: popular; 
+    height: auto;
+  }
+  .forecast { 
+    grid-area: forecast; 
+    width: 93% !important;
+  }
+  .summary-graph { 
+    grid-area: graph; 
+    width: 93% !important;
+  }
+  
+  .weather-overview, 
+  .forecast-summary {
+    display: contents;
+  }
+  
+  .map iframe {
+    min-height: 450px;
+  }
+}
+
+@media (max-width: 600px) {
+  .mobile-grid {
+    gap: 10px;
+  }
+  
+  .current-weather, 
+  .map, 
+  .popular-cities, 
+  .forecast, 
+  .summary-graph {
+    padding: 15px !important;
+    border-radius: 15px !important;
+  }
+  
+  .current-weather img {
+    width: 40%;
+  }
+  
+  .forecast .days div {
+    font-size: 14px;
+  }
 }
