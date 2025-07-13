@@ -2,4 +2,5 @@ Flask
 requests
 numpy
 scikit-learn
+gunicorn
 # Add any other libraries you use
