@@ -1,0 +1,121 @@
+body {
+  margin: 0;
+  font-family: 'Nunito', sans-serif;
+  background: linear-gradient(to bottom, #3b82f6, #1e3a8a);
+  color: white;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.search {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.icons div {
+  font-size: 20px;
+  margin: 10px 0;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-left: 20px;
+}
+
+.weather-overview {
+  display: flex;
+  gap: 20px;
+  height: 50%;
+}
+
+.current-weather,
+.map,
+.popular-cities {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  border-radius: 20px;
+  flex: 1;
+}
+
+.current-weather img {
+  width: 30%;
+}
+
+.temp {
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.details {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.map iframe {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+}
+
+.popular-cities ul {
+  list-style: none;
+  padding: 0;
+}
+
+.popular-cities li {
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.forecast-summary {
+  display: flex;
+  gap: 20px;
+}
+
+.forecast {
+ 
+  background: rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  border-radius: 20px;
+  width: 30%;
+}
+.summary-graph {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  border-radius: 20px;
+  width: 930px;
+}
+
+.days div {
+  margin: 10px 0;
+}
+
+.sun-times {
+  margin-top: 10px;
+  font-size: 1em;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.sun-times div {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 5px 10px;
+  border-radius: 5px;
+}

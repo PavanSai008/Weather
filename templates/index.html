@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weather Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <style>
+    /* Responsive tweaks */
+    @media (max-width: 900px) {
+      .container, .main-content {
+        flex-direction: column;
+        height: auto;
+      }
+      .weather-overview, .forecast-summary {
+        flex-direction: column;
+        height: auto;
+      }
+      .map iframe {
+        min-height: 200px;
+      }
+    }
+    @media (max-width: 600px) {
+      .main-content, .weather-overview, .forecast-summary {
+        gap: 10px;
+        padding: 10px;
+      }
+      .current-weather, .map, .popular-cities, .forecast, .summary-graph {
+        padding: 10px;
+        border-radius: 10px;
+      }
+      .current-weather img {
+        width: 40%;
+      }
+      .forecast .days div {
+        font-size: 14px;
+      }
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <header style="width:100%;display:flex;justify-content:center;align-items:center;padding:20px 0;">
+    <form id="city-search-form" method="get" action="/" style="display:flex;gap:10px;">
+      <input type="text" id="city-input" name="city" placeholder="Enter city name" style="padding:8px 12px;border-radius:5px;border:1px solid #ccc;" value="{{ city }}">
+      <button type="submit" style="padding:8px 16px;border-radius:5px;border:none;background:#007bff;color:#fff;">Search</button>
+    </form>
+  </header>
+  <main class="main-content">
+    <section class="weather-overview" style="display:flex;gap:20px;">
+      <div class="current-weather" style="color: #fff; border-radius: 20px; padding: 24px 28px; width: 320px; box-shadow: 0 4px 24px rgba(0,0,0,0.10);">
+        <div style="font-size:1.1em; font-weight:600;">
+          Current Weather - <span id="city-input">{{ city }}</span>
+        </div>
+        <div style="font-size:1.1em; font-weight:600;">
+          Current condition - <span id="condition" style="font-size:1.2em; font-weight:500; margin-bottom:14px;">Loading...</span>
+        </div>
+        <div id="datetime" style="font-size:0.95em; color:#e0e0e0; margin-bottom:10px;">--</div>
+        <div style="display:flex; align-items:center; gap:18px; margin-bottom:10px;">
+          <img id="weather-icon" src="{{ url_for('static', filename='icons/rainy.png') }}" alt="Weather Icon" >
+          <div>
+            <span id="temp" style="font-size:3em; font-weight:700; line-height:1;">--</span>
+            <span style="font-size:1.3em; vertical-align:super;">°C</span>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+          <div style="text-align:center;">
+            <img src="{{ url_for('static', filename='icons/pressure.png') }}" style="width:24px; opacity:0.8;">
+            <div id="pressure" style="font-size:1em;">--</div>
+          </div>
+          <div style="text-align:center;">
+            <img src="{{ url_for('static', filename='icons/humidity.png') }}" style="width:24px; opacity:0.8;">
+            <div id="humidity" style="font-size:1em;">--%</div>
+          </div>
+          <div style="text-align:center;">
+            <img src="{{ url_for('static', filename='icons/wind.png') }}" style="width:24px; opacity:0.8;">
+            <div id="wind" style="font-size:1em;">--km/h</div>
+          </div>
+          <div style="text-align:center;">
+            <img src="{{ url_for('static', filename='icons/uv.png') }}" style="width:24px; opacity:0.8;">
+            <div id="uv" style="font-size:1em;">--</div>
+          </div>
+        </div>
+          {% if prediction %}
+    <div id="rain-prediction-widget" style="
+      margin: 40px auto 24px auto;
+      max-width: 420px;
+      background: {{ 'linear-gradient(90deg, #4fc3f7 0%, #1976d2 100%)' if prediction == 'Rain' else 'linear-gradient(90deg, #81c784 0%, #388e3c 100%)' }};
+      color: #fff;
+      padding: 18px 28px;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      font-size: 1.2em;
+      font-family: Nunito, Arial, sans-serif;
+      justify-content: center;
+    ">
+      <span style="font-size:2em; margin-right:14px;">
+        {% if prediction == 'Rain' %}
+          🌧️
+        {% else %}
+          ☀️
+        {% endif %}
+      </span>
+      <span>
+        {% if prediction == 'Rain' %}
+          Rain expected today. Carry an umbrella!
+        {% else %}
+          No rain expected. Enjoy your day!
+        {% endif %}
+        {% if percent is not none %}
+          <br>
+          <span style="font-size:0.95em; opacity:0.85;">Confidence: {{ percent }}%</span>
+        {% endif %}
+      </span>
+    </div>
+  {% endif %}
+      </div>
+      <div class="map">
+<iframe src="https://www.rainviewer.com/map.html?loc=16.3903,82.53,5.107541747390662&oCS=1&c=3&o=83&lm=1&layer=radar&sm=1&sn=1&ts=1" width="100%" frameborder="0" style="border:0;height:70vh;" allowfullscreen title="Live Weather Radar Map"></iframe>      </div>
+      <div class="popular-cities">
+        <h3>Popular Cities</h3>
+        <ul>
+          <li><img src="{{ url_for('static', filename='icons/cloudy.png') }}"/> Delhi - Partly Cloudy</li>
+          <li><img src="{{ url_for('static', filename='icons/drizzle.png') }}"/> Mumbai - Drizzle Rain</li>
+          <li><img src="{{ url_for('static', filename='icons/rainy.png') }}"/> Hyderabad - Heavy Rain</li>
+          <li><img src="{{ url_for('static', filename='icons/thunder.png') }}"/> Bangalore - Light Thunders</li>
+          <li><img src="{{ url_for('static', filename='icons/sunny.png') }}"/> Kolkata - Mostly Sunny</li>
+        </ul>
+      </div>
+    </section>
+    <section class="forecast-summary" >
+      <div class="forecast">
+        <h4>Forecast</h4>
+        <div class="days" id="forecast">
+          <!-- JS will populate forecast here -->
+        </div>
+      </div>
+      <div class="summary-graph" style="width: 930px;">
+        <h4>Temperature Today</h4>
+        <div class="sun-times" style="padding-top: 20px;">
+          <div>Sunrise: <span id="sunrise">--:--</span></div>
+          <div>Sunset: <span id="sunset">--:--</span></div>
+        </div>
+        <canvas id="tempChart" width="400" height="150"></canvas>
+        
+      </div>
+    </section>
+  </main>
+  {% if error %}
+  <div style="max-width:420px;margin:0 auto 24px auto;padding:16px;background:#ffcdd2;color:#b71c1c;border-radius:10px;text-align:center;">
+    <strong>Error:</strong> {{ error }}
+  </div>
+{% endif %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
