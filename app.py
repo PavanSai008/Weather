@@ -4,9 +4,8 @@ import numpy as np
 import pickle
 import os
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+# 🔧 Create app instance first!
+app = Flask(__name__)
 
 API_KEY = '37afff6c9bd34d41888100230251307'
 BASE_URL = 'https://api.weatherapi.com/v1'
@@ -17,6 +16,7 @@ MODEL_PATH = 'model.pkl'
 SCALER_PATH = 'scaler.pkl'
 FEATURE_COLUMNS_PATH = 'feature_columns.pkl'
 
+# Load model, scaler, features
 if os.path.exists(MODEL_PATH) and os.path.exists(SCALER_PATH) and os.path.exists(FEATURE_COLUMNS_PATH):
     with open(MODEL_PATH, 'rb') as model_file:
         model = pickle.load(model_file)
@@ -29,6 +29,7 @@ else:
     scaler = None
     feature_columns = None
 
+# Weather fetch function
 def fetch_weather_data(city):
     url = f"{BASE_URL}/current.json?key={API_KEY}&q={city}"
     try:
@@ -51,31 +52,26 @@ def fetch_weather_data(city):
     except Exception as e:
         return {"error": str(e)}
 
+# Prediction
 def get_rain_prediction(city):
     if not model or not scaler or not feature_columns:
         return None, None, "Model, scaler, or feature columns not loaded"
     weather_data = fetch_weather_data(city)
     if "error" in weather_data:
         return None, None, weather_data["error"]
-    print("Weather data:", weather_data)
-    print("Feature columns:", feature_columns)
     features = np.array([weather_data[col] for col in feature_columns]).reshape(1, -1)
-    print("Features for model:", features)
     features_scaled = scaler.transform(features)
-    print("Scaled features:", features_scaled)
     prediction = model.predict(features_scaled)[0]
+    percent = None
     if hasattr(model, "predict_proba"):
         prob = model.predict_proba(features_scaled)[0][1]
-        print("Predicted probability:", prob)
         percent = int(prob * 100)
-    else:
-        percent = None
     return ('Rain' if prediction == 1 else 'No Rain'), percent, None
 
+# Routes
 @app.route('/')
 def index():
     city = request.args.get('city', MAIN_CITY)
-    print(f"Rendering index for city: {city}")
     prediction, percent, error = get_rain_prediction(city)
     return render_template('index.html', prediction=prediction, percent=percent, city=city, error=error)
 
@@ -113,5 +109,7 @@ def get_hourly():
     res = requests.get(url).json()
     return jsonify(res['forecast']['forecastday'][0]['hour'])
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# ✅ Correct way to bind port on Render
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
