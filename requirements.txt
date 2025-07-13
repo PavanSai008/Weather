@@ -1,0 +1,5 @@
+Flask
+requests
+numpy
+scikit-learn
+# Add any other libraries you use
